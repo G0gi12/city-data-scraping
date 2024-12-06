@@ -87,7 +87,7 @@ class CitiesDataSpider(CrawlSpider):
             # crimes_df.to_json()
             crime_data = {
                 'city_state': city_state,
-                'crime_stats': crimes_df.to_json()
+                'crime_stats': crimes_df.to_dict()
             }
 
             yield crime_data
