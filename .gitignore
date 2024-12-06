@@ -1,1 +1,7 @@
 .venv/
+
+cities/cities/__pycache__/__init__.cpython-312.pyc
+
+cities/__pycache__/
+cities/spiders/__pycache__/
+cities/cities/__pycache__/

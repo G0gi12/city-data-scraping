@@ -1,12 +1,15 @@
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
+import time
+from io import StringIO
 
 import pandas as pd
 import json
 
 
 class CitiesDataSpider(CrawlSpider):
+    counter = 0
     name = "cities-data"
     allowed_domains = ["www.city-data.com"]
     start_urls = [
@@ -68,28 +71,36 @@ class CitiesDataSpider(CrawlSpider):
              callback="parse_city", follow=True),
     )
 
-    def parse_item(self, response):
+
+    def parse_city(self, response):
+        self.counter += 1
+        # if self.counter == 50:
+        #     print("Waiting for 50sec")
+        #     time.sleep(50)
+        #     self.counter = 0
         city_state = response.xpath("//h1[@class='city']/span/text()").extract_first() # example Milwaukee, WI
         table_crimes = response.xpath('//table[@class="table tabBlue tblsort tblsticky sortable"]').extract_first()
 
         if table_crimes:
-            crimes_df = pd.read_html(table_crimes)[0]
+            crimes_df = pd.read_html(StringIO(str(table_crimes)))[0]
+
+            # crimes_df.to_json()
             crime_data = {
                 'city_state': city_state,
-                'crime_stats': crimes_df.to_dict(orient='records')
+                'crime_stats': crimes_df.to_json()
             }
 
             yield crime_data
 
-    def close(self, reason):
-        # This method is called when the spider finishes executing
-        # It gathers all items and writes to a JSON file
-        all_city_data = []
+    # def close(self, reason):
+    #     # This method is called when the spider finishes executing
+    #     # It gathers all items and writes to a JSON file
+    #     all_city_data = []
 
-        # Open the file to write JSON
-        with open('city_crime_data.json', 'w') as f:
-            for item in self.crawled_items:
-                all_city_data.append(item)
+    #     # Open the file to write JSON
+    #     with open('city_crime_data.json', 'w') as f:
+    #         for item in self.crawled_items:
+    #             all_city_data.append(item)
             
-            # Dump all city crime data to a JSON file
-            json.dump(all_city_data, f, indent=4)
+    #         # Dump all city crime data to a JSON file
+    #         json.dump(all_city_data, f, indent=4)
