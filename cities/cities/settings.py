@@ -90,3 +90,9 @@ ROBOTSTXT_OBEY = False
 # Set settings whose default value is deprecated to a future-proof value
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+
+# ADDONS = {
+#     "scrapy_zyte_api.Addon": 500,
+# }
+# ZYTE_API_KEY = "6f8a5ad9db4148ac97981e67270ea825"
